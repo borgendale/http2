@@ -40,6 +40,11 @@ uint32_t onevals [32] = {
 };
 
 
+/*
+ * Write 4 bytes.
+ * The huffman encoding units are not on byte boundaries so we shift them
+ * and write 4 bytes when required.
+ */
 static inline void h2_write4(uint32_t val, char * pos, int align) {
     if (align) {
         *(uint32_t *)pos = endian_int32(val);
@@ -50,6 +55,11 @@ static inline void h2_write4(uint32_t val, char * pos, int align) {
     pos += 4;
 }
 
+
+/*
+ * Write 1 to 3 bytes
+ * This is used at the end of writing a block
+ */
 static inline void h2_writen(uint64_t val, char * pos, int n) {
     int i;
     int shift = (n-1)*8;
@@ -60,6 +70,10 @@ static inline void h2_writen(uint64_t val, char * pos, int n) {
 
 }
 
+
+/*
+ * Read 4 bytes
+ */
 static inline uint32_t h2_read4(const char * pos, int align) {
     if (align) {
         return endian_int32(*(uint32_t *)pos);
@@ -70,6 +84,9 @@ static inline uint32_t h2_read4(const char * pos, int align) {
     }
 }
 
+/*
+ * Read 1 to 3 bytes at the end of the block
+ */
 static inline uint32_t h2_readn(const char * pos, int n) {
     int i;
     uint32_t ret = 0;
@@ -79,7 +96,6 @@ static inline uint32_t h2_readn(const char * pos, int n) {
     }
     return ret;
 }
-
 
 
 /*
